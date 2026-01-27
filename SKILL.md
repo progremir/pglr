@@ -1,12 +1,23 @@
+---
+name: pglayer
+description: Secure PostgreSQL CLI for AI agents. Query databases, list tables, describe schemas without handling credentials. Use when tasks involve database queries, data exploration, or schema inspection.
+license: MIT
+compatibility: Requires pglr CLI installed globally (npm install -g pglr). Human must configure connection first.
+metadata:
+  author: progremir
+  version: "1.0.0"
+allowed-tools: Bash(pglr:*)
+---
+
 # pglayer - PostgreSQL CLI for AI Agents
 
-You have access to `pglayer`, a secure PostgreSQL CLI. Use it to query databases without needing connection credentials.
+You have access to `pglr`, a secure PostgreSQL CLI. Use it to query databases without needing connection credentials.
 
 ## Prerequisites
 
 A human must first configure a connection:
 ```bash
-pglayer connect postgres://user:pass@host/database
+pglr connect postgres://user:pass@host/database
 ```
 
 If you get "No connection configured", ask the user to run the connect command.
@@ -15,28 +26,28 @@ If you get "No connection configured", ask the user to run the connect command.
 
 ### Query the database
 ```bash
-pglayer query "SELECT * FROM users WHERE active = true"
+pglr query "SELECT * FROM users WHERE active = true"
 ```
 
 With parameters (prevents SQL injection):
 ```bash
-pglayer query "SELECT * FROM users WHERE id = $1" --params '[123]'
+pglr query "SELECT * FROM users WHERE id = $1" --params '[123]'
 ```
 
 ### List all tables
 ```bash
-pglayer tables
+pglr tables
 ```
 
 ### Describe a table's structure
 ```bash
-pglayer describe users
-pglayer describe myschema.orders
+pglr describe users
+pglr describe myschema.orders
 ```
 
 ### Get full schema overview
 ```bash
-pglayer schema
+pglr schema
 ```
 
 ## Output Format
@@ -70,7 +81,7 @@ On error:
 
 If the user explicitly requests data modification:
 ```bash
-pglayer query "INSERT INTO logs (message) VALUES ($1)" --params '["test"]' --allow-writes
+pglr query "INSERT INTO logs (message) VALUES ($1)" --params '["test"]' --allow-writes
 ```
 
 Only use `--allow-writes` when the user explicitly asks to modify data.
@@ -79,26 +90,26 @@ Only use `--allow-writes` when the user explicitly asks to modify data.
 
 1. **Always check table structure first**:
    ```bash
-   pglayer describe users
+   pglr describe users
    ```
 
 2. **Use parameters for user input**:
    ```bash
    # Good - parameterized
-   pglayer query "SELECT * FROM users WHERE email = $1" --params '["user@example.com"]'
+   pglr query "SELECT * FROM users WHERE email = $1" --params '["user@example.com"]'
 
    # Bad - string interpolation (SQL injection risk)
-   pglayer query "SELECT * FROM users WHERE email = 'user@example.com'"
+   pglr query "SELECT * FROM users WHERE email = 'user@example.com'"
    ```
 
 3. **Limit results when exploring**:
    ```bash
-   pglayer query "SELECT * FROM large_table LIMIT 10"
+   pglr query "SELECT * FROM large_table LIMIT 10"
    ```
 
 4. **Use schema command to understand the database**:
    ```bash
-   pglayer schema
+   pglr schema
    ```
 
 ## Multiple Connections
@@ -106,22 +117,22 @@ Only use `--allow-writes` when the user explicitly asks to modify data.
 If multiple databases are configured:
 ```bash
 # List available connections
-pglayer connections
+pglr connections
 
 # Query specific connection
-pglayer query "SELECT 1" --connection prod
-pglayer tables --connection staging
+pglr query "SELECT 1" --connection prod
+pglr tables --connection staging
 ```
 
 ## Example Workflow
 
 ```bash
 # 1. Understand the database structure
-pglayer schema
+pglr schema
 
 # 2. Explore a specific table
-pglayer describe orders
+pglr describe orders
 
 # 3. Query data
-pglayer query "SELECT id, status, created_at FROM orders WHERE status = $1 ORDER BY created_at DESC LIMIT 20" --params '["pending"]'
+pglr query "SELECT id, status, created_at FROM orders WHERE status = $1 ORDER BY created_at DESC LIMIT 20" --params '["pending"]'
 ```
