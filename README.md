@@ -20,9 +20,23 @@ pglr query "SELECT * FROM users LIMIT 10"
 
 ## Install
 
+### As a CLI tool
+
 ```bash
 npm install -g pglr
 ```
+
+### As a Claude Code skill
+
+```bash
+# Install skill from GitHub
+npx skills add progremir/pglr
+
+# Or install with a specific version
+npx skills add progremir/pglr@1.0.0
+```
+
+After installing as a skill, Claude Code can use `pglr` commands directly when working with PostgreSQL databases.
 
 ## Usage
 
