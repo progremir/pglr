@@ -9,7 +9,7 @@ metadata:
 allowed-tools: Bash(pglr:*)
 ---
 
-# pglayer - PostgreSQL CLI for AI Agents
+# pglr - PostgreSQL CLI for AI Agents
 
 You have access to `pglr`, a secure PostgreSQL CLI. Use it to query databases without needing connection credentials.
 
