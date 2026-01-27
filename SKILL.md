@@ -1,5 +1,5 @@
 ---
-name: pglayer
+name: pglr
 description: Secure PostgreSQL CLI for AI agents. Query databases, list tables, describe schemas without handling credentials. Use when tasks involve database queries, data exploration, or schema inspection.
 license: MIT
 compatibility: Requires pglr CLI installed globally (npm install -g pglr). Human must configure connection first.
