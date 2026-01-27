@@ -136,3 +136,7 @@ pglr describe orders
 # 3. Query data
 pglr query "SELECT id, status, created_at FROM orders WHERE status = $1 ORDER BY created_at DESC LIMIT 20" --params '["pending"]'
 ```
+
+## Additional Resources
+
+See [references/REFERENCE.md](references/REFERENCE.md) for developer documentation including project structure, build commands, and design decisions.
