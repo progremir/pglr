@@ -35,38 +35,21 @@ export class QueryEngine {
     }
 
     try {
-      // Check if this is a write operation (INSERT, UPDATE, DELETE)
-      const isWriteOp = /^\s*(INSERT|UPDATE|DELETE|WITH\s+.*\s+(INSERT|UPDATE|DELETE))/i.test(sql);
+      // Fetch one extra row to detect truncation accurately
+      const limitedSql = this.enforceLimit(sql, this.maxRows + 1);
+      const rows = await this.db.any(limitedSql, params);
 
-      if (isWriteOp) {
-        // Use db.result() for write operations to get affected row count
-        const result = await this.db.result(sql, params);
-        return {
-          success: true,
-          rowCount: 0,
-          rows: [],
-          executionTimeMs: Date.now() - startTime,
-          truncated: false,
-          affectedRows: result.rowCount,
-        };
-      } else {
-        // Use db.any() for SELECT queries
-        // Fetch one extra row to detect truncation accurately
-        const limitedSql = this.enforceLimit(sql, this.maxRows + 1);
-        const rows = await this.db.any(limitedSql, params);
+      // If we got more than maxRows, there are more results
+      const truncated = rows.length > this.maxRows;
+      const limitedRows = rows.slice(0, this.maxRows);
 
-        // If we got more than maxRows, there are more results
-        const truncated = rows.length > this.maxRows;
-        const limitedRows = rows.slice(0, this.maxRows);
-
-        return {
-          success: true,
-          rowCount: limitedRows.length,
-          rows: limitedRows,
-          executionTimeMs: Date.now() - startTime,
-          truncated,
-        };
-      }
+      return {
+        success: true,
+        rowCount: limitedRows.length,
+        rows: limitedRows,
+        executionTimeMs: Date.now() - startTime,
+        truncated,
+      };
     } catch (error) {
       return {
         success: false,
