@@ -4,6 +4,7 @@ export interface QueryResult {
   rows: Record<string, unknown>[];
   executionTimeMs: number;
   truncated: boolean;
+  affectedRows?: number;
   error?: string;
 }
 
